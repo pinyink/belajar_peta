@@ -1,0 +1,19 @@
+{
+    "name": "leaflet-geometryutil"
+  , "version": "0.0.1"
+  , "description": "Leaflet utility functions on geometries"
+  , "keywords": ["Leaflet", "GIS"]
+  , "main": "dist/leaflet.geometryutil.js"
+  , "scripts": {
+    "test": "make test"
+  }
+  , "dependencies": {
+    "leaflet": "*"
+  }
+  , "devDependencies": {
+    "mocha": "*",
+    "chai": "*",
+    "mocha-phantomjs": "*",
+    "jsdoc": "https://github.com/jsdoc3/jsdoc/tarball/master"
+  }
+}
