@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Polygon Picker by Geoman</title>
     <link rel="stylesheet" href="../node_modules/leaflet/dist/leaflet.css"/>
-      
+    <link rel="stylesheet" href="../plugins/Leaflet.draw-develop/src/leaflet.draw.css">
     <link rel="stylesheet" href="../node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css" />  
 
     <style>
@@ -28,6 +28,8 @@
     <script src='https://unpkg.com/leaflet.gridlayer.googlemutant@latest/dist/Leaflet.GoogleMutant.js'></script>
     <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js"></script>
     <script src='https://openlayers.org/api/OpenLayers.js'></script>
+
+    <script src="../plugins/Leaflet.draw-develop/src/Leaflet.draw.js"></script>
     <script src="../plugins/Leaflet.draw-develop/src/ext/GeometryUtil.js"></script>
 
     <script>
@@ -79,24 +81,46 @@
             drawRectangle: false
         }); 
 
-        // untuk mengaktifkan draw polygon on startup page
-        // map.pm.enableDraw('Polygon', {
-        //     snappable: true,
-        //     snapDistance: 20,
-        // });
+        function createAreaTooltip(layer) {
+            if (layer.areaTooltip) {
+                return;
+            }
 
-        // listen to vertexes being added to currently drawn layer (called workingLayer)
-        map.on('pm:drawstart', ({ workingLayer }) => {
-            workingLayer.on('pm:vertexadded', (e) => {
-                // console.log(e);
+            layer.areaTooltip = L.tooltip({
+                permanent: true,
+                direction: 'center',
+                className: 'area-tooltip'
             });
-        });
 
-        var array_latling = new Array();
+            layer.on('remove', function (event) {
+                layer.areaTooltip.remove();
+            });
+
+            layer.on('add', function (event) {
+                updateAreaTooltip(layer);
+                layer.areaTooltip.addTo(map);
+            });
+
+            if (map.hasLayer(layer)) {
+                updateAreaTooltip(layer);
+                layer.areaTooltip.addTo(map);
+            }
+        }
+
+        function updateAreaTooltip(layer) {
+            var area = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
+            var readableArea = L.GeometryUtil.readableArea(area, true);
+            var latlng = layer.getCenter();
+
+            layer.areaTooltip
+                .setContent(readableArea)
+                .setLatLng(latlng);
+        }
+
         map.on('pm:create', function(e) {
+            var layer = e.layer;
+            createAreaTooltip(layer);
         });
-
-        map.pm.setGlobalOptions({ measurements: { measurement: true, displayFormat: 'metric', area: true } });
 
         L.PM.reInitLayer(map);
 
@@ -105,15 +129,9 @@
             var group = L.featureGroup();
             layers.forEach((layer)=>{
                 group.addLayer(layer);
-                // get center
-                // var center = layer.getBounds().getCenter();
-                var latlng = layer.getLatLngs();
-                console.log(latlng[0][0]);
-                var seeArea = L.GeometryUtil.geodesicArea(latlng[0][0]);
-                seeArea = L.GeometryUtil.readableArea(seeArea, true, {})
-                console.log(seeArea);
             });
             shapes = group.toGeoJSON();
+            console.log(shapes);
         }
 
         function towkt() {
