@@ -28,7 +28,7 @@
     <script src='https://unpkg.com/leaflet.gridlayer.googlemutant@latest/dist/Leaflet.GoogleMutant.js'></script>
     <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js"></script>
     <script src='https://openlayers.org/api/OpenLayers.js'></script>
-    <script src="../plugins/Leaflet.GeometryUtil-master/dist/leaflet.geometryutil.js"></script>
+    <script src="../plugins/Leaflet.draw-develop/src/ext/GeometryUtil.js"></script>
 
     <script>
         var map = L.map('map', {pmIgnore: false}).setView(['-6.588706', '110.775882'], 12);
@@ -96,6 +96,8 @@
         map.on('pm:create', function(e) {
         });
 
+        map.pm.setGlobalOptions({ measurements: { measurement: true, displayFormat: 'metric', area: true } });
+
         L.PM.reInitLayer(map);
 
         function geojson() {
@@ -103,11 +105,15 @@
             var group = L.featureGroup();
             layers.forEach((layer)=>{
                 group.addLayer(layer);
-                var center = layer.getBounds().getCenter();
-                console.log(center);
+                // get center
+                // var center = layer.getBounds().getCenter();
+                var latlng = layer.getLatLngs();
+                console.log(latlng[0][0]);
+                var seeArea = L.GeometryUtil.geodesicArea(latlng[0][0]);
+                seeArea = L.GeometryUtil.readableArea(seeArea, true, {})
+                console.log(seeArea);
             });
             shapes = group.toGeoJSON();
-            console.log(shapes);
         }
 
         function towkt() {
