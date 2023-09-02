@@ -30,6 +30,8 @@
 				for (var i = 0; i < pointsCount; i++) {
 					p1 = latLngs[i];
 					p2 = latLngs[(i + 1) % pointsCount];
+					console.log('p1 '+ p1);
+					console.log('p2 '+p2);
 					area += ((p2.lng - p1.lng) * d2r) *
 						(2 + Math.sin(p1.lat * d2r) + Math.sin(p2.lat * d2r));
 				}
