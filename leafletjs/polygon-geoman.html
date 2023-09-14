@@ -18,7 +18,8 @@
 </head>
 
 <body>
-
+    wkt <input type="text" value="" name="wkt" /> <button id="wkt_btn" onclick="wkt_view()">lihat</button>
+    <br><br>
     <div id="map"></div>
     <hr>
     <button type="button" onclick="geojson()">Show GeoJson</button> <button type="button" onclick="towkt()">Show WKT</button>
@@ -148,6 +149,11 @@
             var wkt = new OpenLayers.Format.WKT(wkt_options);
             var out = wkt.write(testFeature);
             console.log(out);
+        }
+
+        function wkt_view() {
+            var wkt = document.getElementsByName('wkt')[0].value;
+            console.log(wkt);
         }
 
     </script>
