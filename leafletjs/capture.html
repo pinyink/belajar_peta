@@ -25,14 +25,15 @@
     <script>
         var map = L.map('map', {pmIgnore: false}).setView(['-6.588706', '110.775882'], 12);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
+            maxZoom: 18,
             attribution: '© OpenStreetMap'
         }).addTo(map);
 
         var osm = L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"),
             mqi = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.png", {
                 subdomains: ['otile1', 'otile2', 'otile3', 'otile4']
-            });
+            }),
+            esri = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
 
         var google_satelit = L.gridLayer.googleMutant({
             type: 'satellite' // valid values are 'roadmap', 'satellite', 'terrain' and 'hybrid' 
@@ -41,6 +42,7 @@
         var baseMaps = {
             "OpenStreetMap": osm,
             "Google Satellite": google_satelit,
+            "Esri Satellite": esri,
         };
 
         var overlays = { //add any overlays here
