@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../node_modules/leaflet/dist/leaflet.css"/>
+    <style>
+        #map {
+            height: 80vh;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="mapSimpleScreeningState"></div>
+    <button id="screenMap">SS</button>
+
+    <script src="../node_modules/leaflet/dist/leaflet.js"></script>
+    <script src="https://maps.google.com/maps/api/js?v=3.2&key=AIzaSyBy8irzccEOp7ezf5nQ2UPaLGcte_AEsOQ"></script>
+    <script src="../node_modules/leaflet.gridlayer.googlemutant/dist/Leaflet.GoogleMutant.js"></script>
+    <script src="../node_modules/leaflet-simple-map-screenshoter/dist/leaflet-simple-map-screenshoter.js"></script>
+    <script src="../node_modules/html2canvas/dist/html2canvas.js"></script>
+
+    <script>
+        var map = L.map('map', {pmIgnore: false}).setView(['-6.588706', '110.775882'], 12);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        var osm = L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"),
+            mqi = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.png", {
+                subdomains: ['otile1', 'otile2', 'otile3', 'otile4']
+            });
+
+        var google_satelit = L.gridLayer.googleMutant({
+            type: 'satellite' // valid values are 'roadmap', 'satellite', 'terrain' and 'hybrid' 
+        })
+
+        var baseMaps = {
+            "OpenStreetMap": osm,
+            "Google Satellite": google_satelit,
+        };
+
+        var overlays = { //add any overlays here
+
+        };
+
+        L.control.layers(baseMaps, overlays, {
+            position: 'bottomleft'
+        }).addTo(map);
+
+        L.Polygon
+
+        // // init plugin
+        // L.simpleMapScreenshoter().addTo(map)
+
+        // // optional: add screening state info
+        // map.on('simpleMapScreenshoter.takeScreen', function (blob) {
+        //     console.log(blob);
+        //     document.getElementById('mapSimpleScreeningState').innerHTML += 'screening...<br>'
+        // })
+        // map.on('simpleMapScreenshoter.done', function () {
+        //     document.getElementById('mapSimpleScreeningState').innerHTML += 'screen end...<br>'
+        // })
+        // map.on('simpleMapScreenshoter.error', function (event) {
+        //     console.error(event.e)
+        //     document.getElementById('mapSimpleScreeningState').innerHTML += event.e.toString() + '<br>'
+        // });
+
+        var latlngs = [[-6.731684, 110.706439],[-6.732025, 110.707201],[-6.732632, 110.706911],[-6.732323, 110.706149]];
+
+        var polygon = L.polygon(latlngs, {color: 'red'}).addTo(map);
+
+        // zoom the map to the polygon
+        map.fitBounds(polygon.getBounds());
+
+        // init plugin
+        var simpleMapScreenshoter = L.simpleMapScreenshoter({
+            hidden: true, // hide screen btn on map
+        }).addTo(map)
+
+        // return as blob
+        document.getElementById('screenMap').addEventListener('click', function () {
+            simpleMapScreenshoter.takeScreen('blob', {
+                caption: function () {
+                    return 'Hello world'
+                }
+            }).then(blob => {
+                saveAs(blob, 'screen.png');
+                console.log(blob);
+            }).catch(e => {
+                alert(e.toString())
+            })
+        })
+    </script>
+</body>
+</html>

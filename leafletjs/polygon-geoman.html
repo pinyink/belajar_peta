@@ -9,16 +9,21 @@
     <link rel="stylesheet" href="../node_modules/leaflet/dist/leaflet.css"/>
     <link rel="stylesheet" href="../plugins/Leaflet.draw-develop/src/leaflet.draw.css">
     <link rel="stylesheet" href="../node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css" />  
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
     <style>
         #map {
-            height: 95vh;
+            height: 80vh;
         }
     </style>
 </head>
 
 <body>
-    wkt <input type="text" value="" name="wkt" /> <button id="wkt_btn" onclick="wkt_view()">lihat</button>
+    <div>
+        <label for=""></label>
+        <input type="text" value="" name="wkt" id="wkt" />
+    </div>  
+    <button id="wkt_btn" onclick="wkt_view()">lihat</button>
     <br><br>
     <div id="map"></div>
     <hr>
@@ -32,6 +37,7 @@
 
     <script src="../plugins/Leaflet.draw-develop/src/Leaflet.draw.js"></script>
     <script src="../plugins/Leaflet.draw-develop/src/ext/GeometryUtil.js"></script>
+    <script src="../node_modules/leaflet-easyprint/dist/bundle.js"></script>
 
     <script>
         var map = L.map('map', {pmIgnore: false}).setView(['-6.588706', '110.775882'], 12);
@@ -155,6 +161,14 @@
             var wkt = document.getElementsByName('wkt')[0].value;
             console.log(wkt);
         }
+
+        var printer = L.easyPrint({
+      		tileLayer: osm,
+      		sizeModes: ['Current', 'A4Landscape', 'A4Portrait'],
+      		filename: 'myMap',
+      		exportOnly: true,
+      		hideControlContainer: true
+		}).addTo(map);
 
     </script>
 </body>
